@@ -1,0 +1,40 @@
+name: Daily activity log
+
+on:
+  schedule:
+    - cron: "30 3 * * *" # every day ~8:30 AM PKT
+  workflow_dispatch: # lets you run it manually too
+
+permissions:
+  contents: write
+
+jobs:
+  daily-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add today's entry
+        run: |
+          DATE=$(date +%F)
+          if grep -q "^## $DATE" LOG.md 2>/dev/null; then
+            echo "Already logged for $DATE, skipping."
+          else
+            {
+              echo "## $DATE"
+              echo "- Daily check-in: keeping the streak alive."
+              echo ""
+            } >> LOG.md
+          fi
+
+      - name: Commit and push
+        run: |
+          git config user.name "ahn009"
+          git config user.email "ID+ahn009@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add LOG.md
+            git commit -m "Daily log: $(date +%F)"
+            git push
+          else
+            echo "Nothing to commit."
+          fi
