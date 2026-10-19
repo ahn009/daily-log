@@ -30,7 +30,7 @@ jobs:
       - name: Commit and push
         run: |
           git config user.name "ahn009"
-          git config user.email "ID+ahn009@users.noreply.github.com"
+          git config user.email "mt6992266@gmail.com"
           if [ -n "$(git status --porcelain)" ]; then
             git add LOG.md
             git commit -m "Daily log: $(date +%F)"
